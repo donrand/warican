@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { supabase } from './lib/supabase.js'
+import ProjectList from './components/ProjectList.jsx'
 import MemberForm from './components/MemberForm.jsx'
 import PaymentForm from './components/PaymentForm.jsx'
 import PaymentList from './components/PaymentList.jsx'
@@ -6,31 +8,67 @@ import Settlement from './components/Settlement.jsx'
 import './App.css'
 
 function App() {
+  const [currentProject, setCurrentProject] = useState(null)
   const [members, setMembers] = useState([])
   const [payments, setPayments] = useState([])
 
-  const addMember = (name) => {
+  useEffect(() => {
+    if (currentProject) {
+      loadMembers()
+      loadPayments()
+    }
+  }, [currentProject])
+
+  const loadMembers = async () => {
+    const { data } = await supabase
+      .from('members')
+      .select('*')
+      .eq('project_id', currentProject.id)
+    setMembers(data?.map(m => m.name) || [])
+  }
+
+  const loadPayments = async () => {
+    const { data } = await supabase
+      .from('payments')
+      .select('*')
+      .eq('project_id', currentProject.id)
+      .order('created_at', { ascending: true })
+    setPayments(data || [])
+  }
+
+  const addMember = async (name) => {
     if (name && !members.includes(name)) {
-      setMembers([...members, name])
+      await supabase.from('members').insert({ project_id: currentProject.id, name })
+      await loadMembers()
     }
   }
 
-  const removeMember = (name) => {
-    setMembers(members.filter(m => m !== name))
-    setPayments(payments.filter(p => p.payer !== name))
+  const removeMember = async (name) => {
+    await supabase.from('members').delete()
+      .eq('project_id', currentProject.id).eq('name', name)
+    await loadMembers()
   }
 
-  const addPayment = (payment) => {
-    setPayments([...payments, { ...payment, id: Date.now() }])
+  const addPayment = async (payment) => {
+    await supabase.from('payments').insert({ project_id: currentProject.id, ...payment })
+    await loadPayments()
   }
 
-  const removePayment = (id) => {
-    setPayments(payments.filter(p => p.id !== id))
+  const removePayment = async (id) => {
+    await supabase.from('payments').delete().eq('id', id)
+    await loadPayments()
+  }
+
+  if (!currentProject) {
+    return <ProjectList onSelect={setCurrentProject} />
   }
 
   return (
     <div className="app">
-      <h1>WARICAN 割り勘</h1>
+      <div className="project-header">
+        <button className="btn-back" onClick={() => setCurrentProject(null)}>← 一覧に戻る</button>
+        <h1>{currentProject.name}</h1>
+      </div>
 
       <div className="section">
         <h2>メンバー登録</h2>
