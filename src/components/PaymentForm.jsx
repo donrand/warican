@@ -15,13 +15,6 @@ function PaymentForm({ members, onAdd }) {
     )
   }
 
-  const handleDescriptionClick = () => {
-    if (!description) {
-      const sample = DESCRIPTION_SAMPLES[Math.floor(Math.random() * DESCRIPTION_SAMPLES.length)]
-      setDescription(sample)
-    }
-  }
-
   const handleAdd = () => {
     const amt = parseInt(amount, 10)
     if (!amt || amt <= 0) {
@@ -61,12 +54,30 @@ function PaymentForm({ members, onAdd }) {
         <label>内容（任意）</label>
         <input
           type="text"
-          placeholder="クリックでサンプル入力"
+          placeholder="例: ランチ代"
           value={description}
           onChange={e => setDescription(e.target.value)}
-          onClick={handleDescriptionClick}
           style={{ marginTop: 4 }}
         />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
+          {DESCRIPTION_SAMPLES.map(sample => (
+            <button
+              key={sample}
+              onClick={() => setDescription(sample)}
+              style={{
+                padding: '4px 10px',
+                fontSize: '0.8rem',
+                background: description === sample ? '#2c7be5' : '#f0f0f0',
+                color: description === sample ? '#fff' : '#555',
+                border: 'none',
+                borderRadius: 20,
+                cursor: 'pointer',
+              }}
+            >
+              {sample}
+            </button>
+          ))}
+        </div>
       </div>
       <div>
         <label>割り勘メンバー</label>
