@@ -1,9 +1,20 @@
+import { useState } from 'react'
+
+function calculateBalances(members, payments) {
+  const balance = {}
+  members.forEach(m => (balance[m] = 0))
+  payments.forEach(({ payer, amount, participants }) => {
+    const share = amount / participants.length
+    participants.forEach(p => (balance[p] -= share))
+    balance[payer] += amount
+  })
+  return balance
+}
+
 function calculateSettlement(members, payments) {
-  // 通常支払い（支払者が参加者に含まれる）と肩代わり支払いに分離
   const regularPayments = payments.filter(p => p.participants.includes(p.payer))
   const coveredPayments = payments.filter(p => !p.participants.includes(p.payer))
 
-  // 通常支払いのみで残高を計算
   const balance = {}
   members.forEach(m => (balance[m] = 0))
   regularPayments.forEach(({ payer, amount, participants }) => {
@@ -12,7 +23,6 @@ function calculateSettlement(members, payments) {
     balance[payer] += amount
   })
 
-  // 残高の多い順に並べて精算リストを作成
   const creditors = []
   const debtors = []
   Object.entries(balance).forEach(([name, amt]) => {
@@ -35,17 +45,13 @@ function calculateSettlement(members, payments) {
     if (db.amount < 0.5) di++
   }
 
-  // 肩代わり支払いを精算リストに反映
   coveredPayments.forEach(({ payer, amount, participants }) => {
     const share = amount / participants.length
     participants.forEach(covered => {
-      // covered が payer に返す必要がある（share 分）
-      // 通常精算で covered→payer の取引があれば増額
       const fwdIdx = transactions.findIndex(t => t.from === covered && t.to === payer)
       if (fwdIdx >= 0) {
         transactions[fwdIdx].amount += share
       } else {
-        // payer→covered の取引があれば相殺・反転
         const revIdx = transactions.findIndex(t => t.from === payer && t.to === covered)
         if (revIdx >= 0) {
           const t = transactions[revIdx]
@@ -59,7 +65,6 @@ function calculateSettlement(members, payments) {
             }
           }
         } else {
-          // 取引がない場合は直接追加
           transactions.push({ from: covered, to: payer, amount: share })
         }
       }
@@ -72,7 +77,18 @@ function calculateSettlement(members, payments) {
 }
 
 function Settlement({ members, payments }) {
+  const [copied, setCopied] = useState(false)
+  const balances = calculateBalances(members, payments)
   const transactions = calculateSettlement(members, payments)
+
+  const copyToClipboard = () => {
+    const text = transactions
+      .map(t => `${t.from} → ${t.to} に ¥${t.amount.toLocaleString()} 支払う`)
+      .join('\n')
+    navigator.clipboard.writeText(`精算結果\n${text}`)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   if (transactions.length === 0) {
     return (
@@ -85,12 +101,40 @@ function Settlement({ members, payments }) {
 
   return (
     <div>
+      <div style={{ marginBottom: 16 }}>
+        <p style={{ fontSize: '0.85rem', color: '#888', marginBottom: 8 }}>残高サマリー</p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {members.map(m => {
+            const bal = Math.round(balances[m])
+            return (
+              <div key={m} style={{
+                padding: '5px 12px',
+                borderRadius: 20,
+                background: bal >= 0 ? '#e8f5e9' : '#fdecea',
+                color: bal >= 0 ? '#2e7d32' : '#c62828',
+                fontSize: '0.85rem',
+              }}>
+                {m}：{bal >= 0 ? '+' : ''}¥{bal.toLocaleString()}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
       {transactions.map((t, idx) => (
         <div key={idx} className="settlement-item">
           <strong>{t.from}</strong> → <strong>{t.to}</strong> に{' '}
           <span className="amount">¥{t.amount.toLocaleString()}</span> 支払う
         </div>
       ))}
+
+      <button
+        className="btn-primary"
+        onClick={copyToClipboard}
+        style={{ marginTop: 12, width: '100%' }}
+      >
+        {copied ? 'コピーしました！' : '精算結果をコピー'}
+      </button>
     </div>
   )
 }

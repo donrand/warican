@@ -59,6 +59,17 @@ function App() {
     await loadPayments()
   }
 
+  const updatePayment = async (id, updates) => {
+    await supabase.from('payments').update(updates).eq('id', id)
+    await loadPayments()
+  }
+
+  const completeProject = async () => {
+    if (!window.confirm('このプロジェクトを完了にしますか？')) return
+    await supabase.from('projects').update({ completed: true }).eq('id', currentProject.id)
+    setCurrentProject({ ...currentProject, completed: true })
+  }
+
   if (!currentProject) {
     return <ProjectList onSelect={setCurrentProject} />
   }
@@ -68,6 +79,35 @@ function App() {
       <div className="project-header">
         <button className="btn-back" onClick={() => setCurrentProject(null)}>← 一覧に戻る</button>
         <h1>{currentProject.name}</h1>
+        {!currentProject.completed && (
+          <button onClick={completeProject} style={{
+            marginLeft: 'auto',
+            background: '#e8f5e9',
+            color: '#2e7d32',
+            border: '1px solid #a5d6a7',
+            borderRadius: 4,
+            padding: '6px 12px',
+            fontSize: '0.85rem',
+            cursor: 'pointer',
+            whiteSpace: 'nowrap',
+          }}>
+            完了にする
+          </button>
+        )}
+        {currentProject.completed && (
+          <span style={{
+            marginLeft: 'auto',
+            background: '#e8f5e9',
+            color: '#2e7d32',
+            border: '1px solid #a5d6a7',
+            borderRadius: 4,
+            padding: '6px 12px',
+            fontSize: '0.85rem',
+            whiteSpace: 'nowrap',
+          }}>
+            完了済み
+          </span>
+        )}
       </div>
 
       <div className="section">
@@ -86,7 +126,7 @@ function App() {
         <>
           <div className="section">
             <h2>支払い一覧</h2>
-            <PaymentList payments={payments} onRemove={removePayment} />
+            <PaymentList payments={payments} members={members} onRemove={removePayment} onUpdate={updatePayment} />
           </div>
           <div className="section">
             <h2>精算結果</h2>

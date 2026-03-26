@@ -71,7 +71,12 @@ function ProjectList({ onSelect }) {
           <h2>プロジェクト一覧</h2>
           {projects.map(p => (
             <div key={p.id} className="project-item" onClick={() => onSelect(p)}>
-              <span>{p.name}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span>{p.name}</span>
+                {p.completed && (
+                  <span style={{ fontSize: '0.75rem', background: '#e8f5e9', color: '#2e7d32', padding: '2px 8px', borderRadius: 20 }}>完了</span>
+                )}
+              </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span className="project-date">
                   {new Date(p.created_at).toLocaleDateString('ja-JP')}
