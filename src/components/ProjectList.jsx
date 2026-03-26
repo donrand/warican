@@ -4,27 +4,30 @@ import { supabase } from '../lib/supabase.js'
 function ProjectList({ onSelect }) {
   const [projects, setProjects] = useState([])
   const [newName, setNewName] = useState('')
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     loadProjects()
   }, [])
 
   const loadProjects = async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('projects')
       .select('*')
       .order('created_at', { ascending: false })
+    if (error) { setError(error.message); return }
     setProjects(data || [])
   }
 
   const createProject = async () => {
     const name = newName.trim()
     if (!name) return
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('projects')
       .insert({ name })
       .select()
       .single()
+    if (error) { setError(error.message); return }
     setNewName('')
     if (data) onSelect(data)
   }
@@ -36,6 +39,11 @@ function ProjectList({ onSelect }) {
   return (
     <div className="app">
       <h1>WARICAN 割り勘</h1>
+      {error && (
+        <div style={{ color: '#e74c3c', background: '#fdf0ef', padding: '12px', borderRadius: '6px', marginBottom: '16px', fontSize: '0.9rem' }}>
+          DB接続エラー: {error}
+        </div>
+      )}
 
       <div className="section">
         <h2>新しいプロジェクト</h2>
