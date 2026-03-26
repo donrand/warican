@@ -39,7 +39,12 @@ function Settlement({ members, payments }) {
   const transactions = calculateSettlement(members, payments)
 
   if (transactions.length === 0) {
-    return <p className="no-data">精算不要です（全員均等に支払済み）</p>
+    return (
+      <div style={{ textAlign: 'center', padding: '16px 0' }}>
+        <div style={{ fontSize: '2rem' }}>🎉</div>
+        <p style={{ fontWeight: 'bold', color: '#2c7be5', marginTop: 8 }}>精算完了！全員の残高が 0 円です</p>
+      </div>
+    )
   }
 
   return (

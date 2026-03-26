@@ -15,10 +15,6 @@ function PaymentForm({ members, onAdd }) {
   const handleAdd = () => {
     const amt = parseInt(amount, 10)
     if (!payer || !amt || amt <= 0 || participants.length === 0) return
-    if (!participants.includes(payer)) {
-      alert('支払者は割り勘メンバーに含めてください')
-      return
-    }
     onAdd({ payer, amount: amt, description: description.trim() || '支払い', participants })
     setAmount('')
     setDescription('')
