@@ -32,6 +32,13 @@ function ProjectList({ onSelect }) {
     if (data) onSelect(data)
   }
 
+  const deleteProject = async (e, id) => {
+    e.stopPropagation()
+    if (!window.confirm('このプロジェクトを削除しますか？')) return
+    await supabase.from('projects').delete().eq('id', id)
+    await loadProjects()
+  }
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') createProject()
   }
@@ -65,9 +72,12 @@ function ProjectList({ onSelect }) {
           {projects.map(p => (
             <div key={p.id} className="project-item" onClick={() => onSelect(p)}>
               <span>{p.name}</span>
-              <span className="project-date">
-                {new Date(p.created_at).toLocaleDateString('ja-JP')}
-              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span className="project-date">
+                  {new Date(p.created_at).toLocaleDateString('ja-JP')}
+                </span>
+                <button className="btn-danger" onClick={e => deleteProject(e, p.id)}>削除</button>
+              </div>
             </div>
           ))}
         </div>
