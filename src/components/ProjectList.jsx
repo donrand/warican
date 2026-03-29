@@ -100,9 +100,6 @@ function ProjectList() {
                 {p.completed && (
                   <span style={{ fontSize: '0.75rem', background: '#e8f5e9', color: '#2e7d32', padding: '2px 8px', borderRadius: 20 }}>完了</span>
                 )}
-                {p.rounding_unit > 1 && (
-                  <span style={{ fontSize: '0.75rem', background: '#fff3e0', color: '#e65100', padding: '2px 8px', borderRadius: 20 }}>{p.rounding_unit}円単位</span>
-                )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span className="project-date">{new Date(p.created_at).toLocaleDateString('ja-JP')}</span>
