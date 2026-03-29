@@ -119,11 +119,12 @@ function Settlement({ members, payments, roundingUnit = 1 }) {
               <div key={m} style={{
                 padding: '5px 12px',
                 borderRadius: 20,
-                background: bal >= 0 ? '#e8f5e9' : '#fdecea',
-                color: bal >= 0 ? '#2e7d32' : '#c62828',
+                background: bal > 0 ? '#fff8e1' : bal < 0 ? '#e8f0fe' : '#e8f5e9',
+                color: bal > 0 ? '#e65100' : bal < 0 ? '#2c7be5' : '#2e7d32',
                 fontSize: '0.85rem',
+                fontWeight: 500,
               }}>
-                {m}：{bal >= 0 ? '+' : ''}¥{bal.toLocaleString()}
+                {bal > 0 ? `${m}：立替中 ¥${bal.toLocaleString()}` : bal < 0 ? `${m}：¥${Math.abs(bal).toLocaleString()} 支払う` : `${m}：精算済み`}
               </div>
             )
           })}
@@ -162,34 +163,60 @@ function Settlement({ members, payments, roundingUnit = 1 }) {
       </button>
 
       {showDetail && (
-        <div style={{ marginTop: 12, padding: '16px', background: '#fafafa', borderRadius: 8, border: '1px solid #eee' }}>
-          <p style={{ fontSize: '0.85rem', color: '#888', marginBottom: 8 }}>１円単位 残高サマリー</p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
-            {members.map(m => {
-              const bal = Math.round(detailBalances[m])
-              return (
-                <div key={m} style={{
-                  padding: '5px 12px',
-                  borderRadius: 20,
-                  background: bal >= 0 ? '#e8f5e9' : '#fdecea',
-                  color: bal >= 0 ? '#2e7d32' : '#c62828',
-                  fontSize: '0.85rem',
-                }}>
-                  {m}：{bal >= 0 ? '+' : ''}¥{bal.toLocaleString()}
+        <div style={{ marginTop: 12 }}>
+          <p style={{ fontSize: '0.85rem', color: '#888', marginBottom: 10 }}>個人別 損得（１円単位）</p>
+          {members.map(m => {
+            const bal = Math.round(detailBalances[m])
+            const isCreditor = bal > 0
+            const isDebtor = bal < 0
+            return (
+              <div key={m} style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '12px 14px',
+                marginBottom: 8,
+                borderRadius: 10,
+                background: isCreditor ? '#fff8e1' : isDebtor ? '#f5f5f5' : '#e8f5e9',
+                border: `1px solid ${isCreditor ? '#ffe082' : isDebtor ? '#e0e0e0' : '#a5d6a7'}`,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontWeight: 600 }}>{m}</span>
+                  {isCreditor && (
+                    <span style={{
+                      fontSize: '0.72rem', fontWeight: 700,
+                      background: '#ff6f00', color: '#fff',
+                      borderRadius: 10, padding: '2px 8px',
+                    }}>立替中・損</span>
+                  )}
+                  {isDebtor && (
+                    <span style={{
+                      fontSize: '0.72rem', fontWeight: 700,
+                      background: '#90a4ae', color: '#fff',
+                      borderRadius: 10, padding: '2px 8px',
+                    }}>支払い待ち</span>
+                  )}
+                  {!isCreditor && !isDebtor && (
+                    <span style={{
+                      fontSize: '0.72rem', fontWeight: 700,
+                      background: '#43a047', color: '#fff',
+                      borderRadius: 10, padding: '2px 8px',
+                    }}>精算済み</span>
+                  )}
                 </div>
-              )
-            })}
-          </div>
-          {detailTransactions.length === 0 ? (
-            <p style={{ color: '#2c7be5', fontWeight: 'bold', fontSize: '0.9rem' }}>精算完了</p>
-          ) : (
-            detailTransactions.map((t, idx) => (
-              <div key={idx} className="settlement-item" style={{ fontSize: '0.9rem' }}>
-                <strong>{t.from}</strong> → <strong>{t.to}</strong> に{' '}
-                <span className="amount">¥{t.amount.toLocaleString()}</span> 支払う
+                <span style={{
+                  fontWeight: 700,
+                  fontSize: '1rem',
+                  color: isCreditor ? '#e65100' : isDebtor ? '#555' : '#2e7d32',
+                }}>
+                  {isCreditor ? `−¥${bal.toLocaleString()}` : isDebtor ? `+¥${Math.abs(bal).toLocaleString()}` : '¥0'}
+                </span>
               </div>
-            ))
-          )}
+            )
+          })}
+          <p style={{ fontSize: '0.78rem', color: '#aaa', marginTop: 6 }}>
+            −：立替中（受け取り待ち）／ +：支払い予定
+          </p>
         </div>
       )}
     </div>
