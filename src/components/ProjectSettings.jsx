@@ -55,11 +55,6 @@ function ProjectSettings({ project, onUpdate }) {
             </button>
           ))}
         </div>
-        {roundingUnit > 1 && (
-          <p style={{ fontSize: '0.8rem', color: '#888', marginTop: 8 }}>
-            割り勘の端数を切り捨て、余った分は支払者に還元されます
-          </p>
-        )}
       </div>
 
       <button
