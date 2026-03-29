@@ -44,22 +44,19 @@ function ProjectSettings({ project, onUpdate }) {
 
       <div>
         <label>端数処理</label>
-        <div style={{ display: 'flex', gap: 16, marginTop: 6 }}>
+        <div className="toggle-group" style={{ marginTop: 8 }}>
           {[1, 10, 100].map(unit => (
-            <label key={unit} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.9rem', cursor: 'pointer' }}>
-              <input
-                type="radio"
-                name="rounding_unit"
-                value={unit}
-                checked={roundingUnit === unit}
-                onChange={() => setRoundingUnit(unit)}
-              />
+            <button
+              key={unit}
+              className={`toggle-btn ${roundingUnit === unit ? 'payer-active' : ''}`}
+              onClick={() => setRoundingUnit(unit)}
+            >
               {unit === 1 ? '切り捨てなし' : `${unit}円単位`}
-            </label>
+            </button>
           ))}
         </div>
         {roundingUnit > 1 && (
-          <p style={{ fontSize: '0.8rem', color: '#888', marginTop: 6 }}>
+          <p style={{ fontSize: '0.8rem', color: '#888', marginTop: 8 }}>
             割り勘の端数を切り捨て、余った分は支払者に還元されます
           </p>
         )}

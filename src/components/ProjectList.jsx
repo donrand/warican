@@ -71,23 +71,6 @@ function ProjectList() {
           />
           <button className="btn-primary" onClick={createProject}>作成</button>
         </div>
-        <div style={{ marginTop: 10 }}>
-          <label style={{ fontSize: '0.85rem', color: '#555' }}>端数処理</label>
-          <div style={{ display: 'flex', gap: 12, marginTop: 6 }}>
-            {[1, 10, 100].map(unit => (
-              <label key={unit} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.9rem', cursor: 'pointer' }}>
-                <input
-                  type="radio"
-                  name="rounding"
-                  value={unit}
-                  checked={roundingUnit === unit}
-                  onChange={() => setRoundingUnit(unit)}
-                />
-                {unit === 1 ? '切り捨てなし' : `${unit}円単位`}
-              </label>
-            ))}
-          </div>
-        </div>
       </div>
 
       {projects.length > 0 && (
