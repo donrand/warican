@@ -6,8 +6,8 @@
 
 body {
   font-family: 'Helvetica Neue', Arial, sans-serif;
-  background: #f5f5f5;
-  color: #333;
+  background: #f2f4f7;
+  color: #222;
 }
 
 .app {
@@ -17,35 +17,38 @@ body {
 }
 
 h1 {
-  font-size: 1.8rem;
-  margin-bottom: 24px;
+  font-size: 1.6rem;
+  margin-bottom: 20px;
   color: #2c7be5;
+  font-weight: 700;
 }
 
 h2 {
-  font-size: 1.1rem;
+  font-size: 1rem;
   margin-bottom: 12px;
-  color: #555;
+  color: #666;
+  font-weight: 600;
 }
 
 .section {
   background: #fff;
   border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  padding: 18px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
 }
 
 input, select {
   padding: 12px 14px;
-  border: 1.5px solid #ddd;
+  border: 1.5px solid #dde1e7;
   border-radius: 8px;
   font-size: 1rem;
   width: 100%;
   min-height: 48px;
+  background: #fafbfc;
   appearance: none;
   -webkit-appearance: none;
-  background: #fafafa;
+  color: #222;
 }
 
 input:focus, select:focus {
@@ -55,7 +58,7 @@ input:focus, select:focus {
 }
 
 select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 14px center;
   padding-right: 36px;
@@ -69,11 +72,11 @@ button {
   cursor: pointer;
   min-height: 48px;
   white-space: nowrap;
-  transition: background 0.15s, opacity 0.15s;
+  font-weight: 500;
 }
 
 button:active {
-  opacity: 0.75;
+  opacity: 0.8;
 }
 
 .btn-primary {
@@ -82,21 +85,54 @@ button:active {
   font-weight: 600;
 }
 
-.btn-primary:hover {
-  background: #1a63c5;
+.btn-outline {
+  background: #fff;
+  color: #2c7be5;
+  border: 1.5px solid #2c7be5;
+  font-weight: 600;
 }
 
 .btn-danger {
-  background: #e74c3c;
-  color: #fff;
+  background: #fee2e2;
+  color: #c0392b;
   padding: 6px 12px;
   font-size: 0.82rem;
   min-height: 36px;
   white-space: nowrap;
+  font-weight: 600;
 }
 
-.btn-danger:hover {
-  background: #c0392b;
+.btn-edit {
+  background: #f2f4f7;
+  color: #555;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  min-height: 36px;
+  white-space: nowrap;
+}
+
+.btn-cancel {
+  background: #f2f4f7;
+  color: #555;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  min-height: 44px;
+  white-space: nowrap;
+}
+
+.btn-back {
+  background: none;
+  color: #2c7be5;
+  font-size: 0.9rem;
+  padding: 8px 0;
+  white-space: nowrap;
+  min-height: unset;
+  font-weight: 500;
 }
 
 .row {
@@ -117,20 +153,21 @@ button:active {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #e8f0fe;
+  background: #eef2ff;
   border-radius: 24px;
   padding: 6px 14px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  color: #3b5bdb;
 }
 
 .tag .btn-danger {
   padding: 4px 10px;
   font-size: 0.8rem;
-  min-height: 32px;
+  min-height: 30px;
   border-radius: 20px;
 }
 
-/* ピル型トグルボタン（メンバー選択・支払者選択） */
+/* ピル型トグルボタン */
 .toggle-group {
   display: flex;
   flex-wrap: wrap;
@@ -142,13 +179,12 @@ button:active {
   padding: 10px 18px;
   border-radius: 24px;
   font-size: 0.95rem;
-  border: 2px solid #ddd;
-  background: #f5f5f5;
-  color: #555;
+  border: 1.5px solid #dde1e7;
+  background: #f2f4f7;
+  color: #666;
   cursor: pointer;
   min-height: 44px;
   font-weight: 500;
-  transition: all 0.15s;
 }
 
 .toggle-btn.active {
@@ -158,149 +194,9 @@ button:active {
 }
 
 .toggle-btn.payer-active {
-  background: #e8f0fe;
+  background: #eef2ff;
   color: #2c7be5;
   border-color: #2c7be5;
-}
-
-.payment-item {
-  border-bottom: 1px solid #f0f0f0;
-  padding: 14px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-}
-
-.payment-item:last-child {
-  border-bottom: none;
-}
-
-.payment-info {
-  font-size: 0.85rem;
-  color: #888;
-  margin-top: 4px;
-}
-
-.payment-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.btn-edit {
-  background: #f0f0f0;
-  color: #555;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 0.82rem;
-  cursor: pointer;
-  min-height: 36px;
-  white-space: nowrap;
-}
-
-.btn-cancel {
-  background: #f0f0f0;
-  color: #555;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 16px;
-  cursor: pointer;
-  min-height: 44px;
-  white-space: nowrap;
-}
-
-.settlement-item {
-  padding: 12px 0;
-  border-bottom: 1px solid #f0f0f0;
-  font-size: 1rem;
-}
-
-.settlement-item:last-child {
-  border-bottom: none;
-}
-
-.amount {
-  font-weight: bold;
-  color: #2c7be5;
-}
-
-.no-data {
-  color: #aaa;
-  font-size: 0.9rem;
-}
-
-.project-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.project-header h1 {
-  margin-bottom: 0;
-  font-size: 1.4rem;
-}
-
-.btn-back {
-  background: none;
-  color: #2c7be5;
-  font-size: 0.9rem;
-  padding: 8px 0;
-  white-space: nowrap;
-  min-height: unset;
-}
-
-.btn-back:hover {
-  text-decoration: underline;
-}
-
-.project-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 8px;
-  border-bottom: 1px solid #f0f0f0;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: background 0.15s;
-  gap: 8px;
-}
-
-.project-item:last-child {
-  border-bottom: none;
-}
-
-.project-item:hover {
-  background: #f5f8ff;
-}
-
-.project-date {
-  font-size: 0.82rem;
-  color: #aaa;
-}
-
-/* 旧 checkbox-group（互換性のため残す） */
-.checkbox-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 6px;
-}
-
-.checkbox-group label {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.checkbox-group input[type="checkbox"] {
-  width: auto;
 }
 
 /* サンプルタグ */
@@ -322,9 +218,91 @@ button:active {
 
 /* フォームラベル */
 .form-label {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: #666;
+  color: #888;
   display: block;
   margin-bottom: 6px;
+}
+
+/* 支払い一覧 */
+.payment-item {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.payment-item:last-child {
+  border-bottom: none;
+}
+
+.payment-info {
+  font-size: 0.82rem;
+  color: #aaa;
+  margin-top: 3px;
+}
+
+.payment-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* 精算結果 */
+.settlement-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.95rem;
+}
+
+.settlement-item:last-child {
+  border-bottom: none;
+}
+
+.amount {
+  font-weight: 700;
+  color: #2c7be5;
+}
+
+.no-data {
+  color: #bbb;
+  font-size: 0.88rem;
+}
+
+/* プロジェクトヘッダー */
+.project-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.project-header h1 {
+  margin-bottom: 0;
+  font-size: 1.3rem;
+}
+
+/* プロジェクト一覧 */
+.project-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 8px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  gap: 8px;
+}
+
+.project-item:last-child {
+  border-bottom: none;
+}
+
+.project-date {
+  font-size: 0.8rem;
+  color: #bbb;
 }
