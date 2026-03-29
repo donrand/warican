@@ -87,6 +87,8 @@ function Settlement({ members, payments, roundingUnit = 1 }) {
   const [showDetail, setShowDetail] = useState(false)
   const balances = calculateBalances(members, payments, roundingUnit)
   const transactions = calculateSettlement(members, payments, roundingUnit)
+  const detailBalances = calculateBalances(members, payments, 1)
+  const detailTransactions = calculateSettlement(members, payments, 1)
 
   const copyToClipboard = () => {
     const text = transactions
@@ -156,45 +158,38 @@ function Settlement({ members, payments, roundingUnit = 1 }) {
           whiteSpace: 'nowrap',
         }}
       >
-        {showDetail ? '明細を閉じる' : '１円単位の明細を見る'}
+        明細
       </button>
 
       {showDetail && (
-        <div style={{ marginTop: 12 }}>
-          {payments.map((p, idx) => {
-            const n = p.participants.length
-            const perPerson = Math.ceil(p.amount / n)
-            const isCovered = !p.participants.includes(p.payer)
-            return (
-              <div key={idx} style={{
-                background: '#fafafa',
-                border: '1px solid #eee',
-                borderRadius: 8,
-                padding: '12px',
-                marginBottom: 8,
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <span style={{ fontWeight: 600 }}>{p.description}</span>
-                  <span className="amount">¥{p.amount.toLocaleString()}</span>
+        <div style={{ marginTop: 12, padding: '16px', background: '#fafafa', borderRadius: 8, border: '1px solid #eee' }}>
+          <p style={{ fontSize: '0.85rem', color: '#888', marginBottom: 8 }}>１円単位 残高サマリー</p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+            {members.map(m => {
+              const bal = Math.round(detailBalances[m])
+              return (
+                <div key={m} style={{
+                  padding: '5px 12px',
+                  borderRadius: 20,
+                  background: bal >= 0 ? '#e8f5e9' : '#fdecea',
+                  color: bal >= 0 ? '#2e7d32' : '#c62828',
+                  fontSize: '0.85rem',
+                }}>
+                  {m}：{bal >= 0 ? '+' : ''}¥{bal.toLocaleString()}
                 </div>
-                <div style={{ fontSize: '0.82rem', color: '#888', marginBottom: 8 }}>
-                  {p.payer} が立替{isCovered ? '（肩代わり）' : ''}
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                  {p.participants.map(m => (
-                    <div key={m} style={{
-                      background: '#e8f0fe',
-                      borderRadius: 12,
-                      padding: '4px 10px',
-                      fontSize: '0.85rem',
-                    }}>
-                      {m}：¥{perPerson.toLocaleString()}
-                    </div>
-                  ))}
-                </div>
+              )
+            })}
+          </div>
+          {detailTransactions.length === 0 ? (
+            <p style={{ color: '#2c7be5', fontWeight: 'bold', fontSize: '0.9rem' }}>精算完了</p>
+          ) : (
+            detailTransactions.map((t, idx) => (
+              <div key={idx} className="settlement-item" style={{ fontSize: '0.9rem' }}>
+                <strong>{t.from}</strong> → <strong>{t.to}</strong> に{' '}
+                <span className="amount">¥{t.amount.toLocaleString()}</span> 支払う
               </div>
-            )
-          })}
+            ))
+          )}
         </div>
       )}
     </div>
