@@ -81,7 +81,25 @@ payments  : id, project_id, payer, amount, description, participants(jsonb), cre
 1. 通常支払いのみで残高を計算し、グリーディ法で精算リストを作成
 2. 肩代わり支払いごとに既存の取引を相殺・反転させて直接返却を表示
 
-## デプロイ
+## 開発・リリースフロー
+
+- **新機能の開発は `develop` ブランチで行う**（開発用 Supabase に接続）
+- ユーザーから「リリースしてください」の指示があった時のみ `main` にマージして本番デプロイする
+- 勝手に `main` へ push しない
+
+```bash
+# 開発作業
+git checkout develop
+# ... 実装 ...
+git add . && git commit -m "feat: ..."
+git push
+
+# リリース時（ユーザー指示後のみ）
+git checkout main
+git merge develop
+git push
+git checkout develop
+```
 
 `main` ブランチへの push で Vercel が自動デプロイする（1〜2分）。
 デプロイ完了後は `Ctrl + Shift + R` でブラウザを強制リロードして確認する。
