@@ -1,26 +1,32 @@
 import { useState } from 'react'
 
-function calculateBalances(members, payments) {
+function roundedShare(amount, n, unit) {
+  return Math.floor(amount / n / unit) * unit
+}
+
+function calculateBalances(members, payments, roundingUnit = 1) {
   const balance = {}
   members.forEach(m => (balance[m] = 0))
   payments.forEach(({ payer, amount, participants }) => {
-    const share = amount / participants.length
+    const share = roundedShare(amount, participants.length, roundingUnit)
+    const roundedTotal = share * participants.length
     participants.forEach(p => (balance[p] -= share))
-    balance[payer] += amount
+    balance[payer] += roundedTotal
   })
   return balance
 }
 
-function calculateSettlement(members, payments) {
+function calculateSettlement(members, payments, roundingUnit = 1) {
   const regularPayments = payments.filter(p => p.participants.includes(p.payer))
   const coveredPayments = payments.filter(p => !p.participants.includes(p.payer))
 
   const balance = {}
   members.forEach(m => (balance[m] = 0))
   regularPayments.forEach(({ payer, amount, participants }) => {
-    const share = amount / participants.length
+    const share = roundedShare(amount, participants.length, roundingUnit)
+    const roundedTotal = share * participants.length
     participants.forEach(p => (balance[p] -= share))
-    balance[payer] += amount
+    balance[payer] += roundedTotal
   })
 
   const creditors = []
@@ -46,7 +52,7 @@ function calculateSettlement(members, payments) {
   }
 
   coveredPayments.forEach(({ payer, amount, participants }) => {
-    const share = amount / participants.length
+    const share = roundedShare(amount, participants.length, roundingUnit)
     participants.forEach(covered => {
       const fwdIdx = transactions.findIndex(t => t.from === covered && t.to === payer)
       if (fwdIdx >= 0) {
@@ -76,10 +82,10 @@ function calculateSettlement(members, payments) {
     .filter(t => t.amount > 0)
 }
 
-function Settlement({ members, payments }) {
+function Settlement({ members, payments, roundingUnit = 1 }) {
   const [copied, setCopied] = useState(false)
-  const balances = calculateBalances(members, payments)
-  const transactions = calculateSettlement(members, payments)
+  const balances = calculateBalances(members, payments, roundingUnit)
+  const transactions = calculateSettlement(members, payments, roundingUnit)
 
   const copyToClipboard = () => {
     const text = transactions
