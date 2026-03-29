@@ -30,48 +30,54 @@ function PaymentForm({ members, onAdd }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div>
-        <label>支払者</label>
-        <select value={payer} onChange={e => setPayer(e.target.value)} style={{ marginTop: 4 }}>
-          {members.map(m => <option key={m} value={m}>{m}</option>)}
-        </select>
+        <span className="form-label">支払者</span>
+        <div className="toggle-group">
+          {members.map(m => (
+            <button
+              key={m}
+              className={`toggle-btn ${payer === m ? 'payer-active' : ''}`}
+              onClick={() => setPayer(m)}
+            >
+              {m}
+            </button>
+          ))}
+        </div>
       </div>
+
       <div>
-        <label>金額（円）</label>
+        <span className="form-label">金額（円）</span>
         <input
           type="number"
+          inputMode="numeric"
           placeholder="例: 3000"
           value={amount}
           onChange={e => { setAmount(e.target.value); setAmountError('') }}
-          style={{ marginTop: 4, borderColor: amountError ? '#e74c3c' : '' }}
+          style={{ borderColor: amountError ? '#e74c3c' : '' }}
         />
         {amountError && (
-          <p style={{ color: '#e74c3c', fontSize: '0.85rem', marginTop: 4 }}>{amountError}</p>
+          <p style={{ color: '#e74c3c', fontSize: '0.85rem', marginTop: 6 }}>{amountError}</p>
         )}
       </div>
+
       <div>
-        <label>内容（任意）</label>
+        <span className="form-label">内容（任意）</span>
         <input
           type="text"
           placeholder="例: ランチ代"
           value={description}
           onChange={e => setDescription(e.target.value)}
-          style={{ marginTop: 4 }}
         />
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
+        <div className="sample-tags">
           {DESCRIPTION_SAMPLES.map(sample => (
             <button
               key={sample}
+              className="sample-tag"
               onClick={() => setDescription(sample)}
               style={{
-                padding: '4px 10px',
-                fontSize: '0.8rem',
                 background: description === sample ? '#2c7be5' : '#f0f0f0',
                 color: description === sample ? '#fff' : '#555',
-                border: 'none',
-                borderRadius: 20,
-                cursor: 'pointer',
               }}
             >
               {sample}
@@ -79,22 +85,25 @@ function PaymentForm({ members, onAdd }) {
           ))}
         </div>
       </div>
+
       <div>
-        <label>割り勘メンバー</label>
-        <div className="checkbox-group">
+        <span className="form-label">割り勘メンバー</span>
+        <div className="toggle-group">
           {members.map(m => (
-            <label key={m}>
-              <input
-                type="checkbox"
-                checked={participants.includes(m)}
-                onChange={() => toggleParticipant(m)}
-              />
-              {m}
-            </label>
+            <button
+              key={m}
+              className={`toggle-btn ${participants.includes(m) ? 'active' : ''}`}
+              onClick={() => toggleParticipant(m)}
+            >
+              {participants.includes(m) ? '✓ ' : ''}{m}
+            </button>
           ))}
         </div>
       </div>
-      <button className="btn-primary" onClick={handleAdd}>支払いを追加</button>
+
+      <button className="btn-primary" onClick={handleAdd} style={{ width: '100%' }}>
+        支払いを追加
+      </button>
     </div>
   )
 }
