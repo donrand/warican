@@ -5,6 +5,7 @@ import MemberForm from './MemberForm.jsx'
 import PaymentForm from './PaymentForm.jsx'
 import PaymentList from './PaymentList.jsx'
 import Settlement from './Settlement.jsx'
+import ProjectSettings from './ProjectSettings.jsx'
 
 function ProjectDetailPage() {
   const { id } = useParams()
@@ -13,6 +14,7 @@ function ProjectDetailPage() {
   const [members, setMembers] = useState([])
   const [payments, setPayments] = useState([])
   const [notFound, setNotFound] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
 
   useEffect(() => {
     loadProject()
@@ -66,12 +68,6 @@ function ProjectDetailPage() {
     await loadPayments(id)
   }
 
-  const completeProject = async () => {
-    if (!window.confirm('このプロジェクトを完了にしますか？')) return
-    await supabase.from('projects').update({ completed: true }).eq('id', id)
-    setProject({ ...project, completed: true })
-  }
-
   if (notFound) {
     return (
       <div className="app">
@@ -90,25 +86,23 @@ function ProjectDetailPage() {
       <div className="project-header">
         <button className="btn-back" onClick={() => navigate('/')}>← 一覧に戻る</button>
         <h1>{project.name}</h1>
-        {roundingUnit > 1 && (
-          <span style={{ fontSize: '0.8rem', color: '#888', background: '#f5f5f5', padding: '4px 8px', borderRadius: 4 }}>
-            {roundingUnit}円単位
-          </span>
+        {project.completed && (
+          <span style={{ background: '#e8f5e9', color: '#2e7d32', border: '1px solid #a5d6a7', borderRadius: 4, padding: '4px 10px', fontSize: '0.8rem' }}>完了済み</span>
         )}
-        {!project.completed ? (
-          <button onClick={completeProject} style={{
-            marginLeft: 'auto', background: '#e8f5e9', color: '#2e7d32',
-            border: '1px solid #a5d6a7', borderRadius: 4, padding: '6px 12px',
-            fontSize: '0.85rem', cursor: 'pointer', whiteSpace: 'nowrap',
-          }}>完了にする</button>
-        ) : (
-          <span style={{
-            marginLeft: 'auto', background: '#e8f5e9', color: '#2e7d32',
-            border: '1px solid #a5d6a7', borderRadius: 4, padding: '6px 12px',
-            fontSize: '0.85rem', whiteSpace: 'nowrap',
-          }}>完了済み</span>
-        )}
+        <button
+          onClick={() => setShowSettings(s => !s)}
+          style={{ marginLeft: 'auto', background: showSettings ? '#2c7be5' : '#f0f0f0', color: showSettings ? '#fff' : '#555', border: 'none', borderRadius: 4, padding: '6px 14px', fontSize: '0.85rem', cursor: 'pointer' }}
+        >
+          設定
+        </button>
       </div>
+
+      {showSettings && (
+        <div className="section">
+          <h2>プロジェクト設定</h2>
+          <ProjectSettings project={project} onUpdate={setProject} />
+        </div>
+      )}
 
       <div className="section">
         <h2>メンバー登録</h2>
