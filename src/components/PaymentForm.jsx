@@ -87,7 +87,7 @@ function PaymentForm({ members, onAdd }) {
       </div>
 
       <div>
-        <span className="form-label">割り勘メンバー</span>
+        <span className="form-label">メンバー</span>
         <div className="toggle-group">
           {members.map(m => (
             <button

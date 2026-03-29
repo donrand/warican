@@ -76,7 +76,7 @@ function PaymentList({ payments, members, onRemove, onUpdate }) {
                   />
                 </div>
                 <div>
-                  <span className="form-label">割り勘メンバー</span>
+                  <span className="form-label">メンバー</span>
                   <div className="toggle-group">
                     {members.map(m => (
                       <button

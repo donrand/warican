@@ -52,7 +52,7 @@ function ProjectList() {
 
   return (
     <div className="app">
-      <h1>WARICAN 割り勘</h1>
+      <h1>会計アプリ</h1>
       {error && (
         <div style={{ color: '#e74c3c', background: '#fdf0ef', padding: '12px', borderRadius: '6px', marginBottom: '16px', fontSize: '0.9rem' }}>
           DB接続エラー: {error}
